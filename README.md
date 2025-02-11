@@ -1,11 +1,13 @@
-Deploying a personal academic assitant which can summarize my research documents on my local system i.e. with complete research privacy, free, and fine-tunable. 
+# Local RAG Research Assistant 
+It's winter in Chicago and I'm too lazy to finish my readings and finish all my research projects in time. I am 
+deploying a personal academic assitant which can summarize my research documents on my local system i.e. with complete research privacy, free, and fine-tunable. 
 
-This project is composed by:
-LangChain: integration of document loaders, vector stores, and LLMs.
-DeepSeek-R1: open-source reasoning LLM.
-Ollama: A CLI tool for managing local LLMs and embedding models. 
-ChromaDB: vector database to store and retrieve document embeddings for similarity-based queries.
-Streamlit: Web interface for RAG application. 
+This project is built on:
+- *LangChain*: integration of document loaders, vector stores, and LLMs.
+- *DeepSeek-R1*: open-source reasoning LLM.
+- *Ollama*: A CLI tool for managing local LLMs and embedding models. 
+- *ChromaDB*: vector database to store and retrieve document embeddings for similarity-based queries.
+- *Streamlit*: Web interface for RAG application. 
 
 The final RAG architecture will be: 
 
