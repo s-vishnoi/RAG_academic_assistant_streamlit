@@ -28,13 +28,13 @@ class ChatPDF:
         self.text_splitter = RecursiveCharacterTextSplitter(chunk_size=1024, chunk_overlap=100)
         self.prompt = ChatPromptTemplate.from_template(
             """
-            You are a expert assistant answering questions on an uploaded document given the context.
+            You are an expert assistant answering questions on an uploaded document given the context.
             Context:
             {context}
-            
+
             Question:
             {question}
-            
+
             Answer concisely and accurately in three sentences or less.
             """
         )
@@ -74,28 +74,21 @@ class ChatPDF:
         retrieved_docs = self.retriever.invoke(query)
 
         if not retrieved_docs:
-            return "No relevant context found in the document to answer your question."
+            return "No relevant context found in the document."
 
-        formatted_input = {
-            "context": "\n\n".join(doc.page_content for doc in retrieved_docs),
-            "question": query,
-        }
+        context = "\n\n".join(doc.page_content for doc in retrieved_docs[:3])  # Limit to top 3 chunks
 
-        # Build the RAG chain
-        chain = (
-            RunnablePassthrough()  # Passes the input as-is
-            | self.prompt           # Formats the input for the LLM
-            | self.model            # Queries the LLM
-            | StrOutputParser()     # Parses the LLM's output
-        )
+        chain = self.prompt | self.model | StrOutputParser()
+        try:
+            logger.info("Invoking model...")
+            response = chain.invoke({"context": context, "question": query})
+            logger.info("Model responded.")
+        except Exception as e:
+            logger.error(f"Model invocation failed: {e}")
+            return f"Error during model response: {e}"
 
-        logger.info("Generating response using the LLM.")
-        return chain.invoke(formatted_input)
+        return response
 
     def clear(self):
-        """
-        Reset the vector store and retriever.
-        """
-        logger.info("Clearing vector store and retriever.")
         self.vector_store = None
         self.retriever = None
